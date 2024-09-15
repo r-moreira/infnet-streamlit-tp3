@@ -1,0 +1,16 @@
+pandas
+numpy
+streamlit
+matplotlib
+jupyter
+python-dotenv
+playwright
+geopy
+pydeck
+tqdm
+seaborn
+altair
+plotly
+dependency-injector
+pyyaml
+xlrd
