@@ -6,7 +6,7 @@ import os
 
 class Container(containers.DeclarativeContainer):    
     configuration = providers.Configuration(yaml_files=[
-        os.path.join(os.path.dirname(__file__), "app_config.yaml")
+        "./app_config.yaml"
     ])
 
     
