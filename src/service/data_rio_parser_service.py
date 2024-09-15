@@ -63,6 +63,13 @@ class DataRioParserService:
         return pd.DataFrame(continents), pd.DataFrame(countries)
 
     def _clean_final_dataframes(self, continents_df: pd.DataFrame, countries_df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
+        def _clean_dataframe(df: pd.DataFrame) -> pd.DataFrame:
+            for column in df.columns:
+                df[column] = df[column].astype(str).str.strip()
+                if df[column].str.isnumeric().all():
+                    df[column] = pd.to_numeric(df[column])
+            return df
+            
         continents_df.drop(columns=['Continentes e países de residência permanente'], inplace=True)
         continents_df.loc[continents_df['Continente'] == 'América Central', 'Continente'] = 'América Central e Caribe'
         
@@ -71,9 +78,9 @@ class DataRioParserService:
         countries_df.loc[countries_df['Continente'] == 'América Central', 'Continente'] = 'América Central e Caribe'
         countries_df.replace({'-': 0, ' - ': 0}, inplace=True)
 
-        return continents_df, countries_df
+        return  _clean_dataframe(continents_df), _clean_dataframe(countries_df)
 
-    def get_from_table_2675(self, xls_file_path: str) -> tuple[pd.DataFrame, pd.DataFrame]:
+    def parse_table_2675(self, xls_file_path: str) -> tuple[pd.DataFrame, pd.DataFrame]:
         all_sheets_df = self._convert_xls_to_dataframe(xls_file_path)
         continents_df, countries_df = self._clean_and_separate_data(all_sheets_df)
         return self._clean_final_dataframes(continents_df, countries_df)

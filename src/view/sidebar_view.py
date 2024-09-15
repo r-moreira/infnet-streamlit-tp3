@@ -1,4 +1,5 @@
 import streamlit as st
+from streamlit_extras.add_vertical_space import add_vertical_space
 from streamlit_option_menu import option_menu
 from view.abstract_streamlit_view import AbstractStreamlitView
 from service.session_state_service import SessionStateService
@@ -10,8 +11,10 @@ class SidebarView(AbstractStreamlitView):
         self.options = ["Home", "Settings"]
         self.session_state_service = session_state_service
     
-    def render(self) -> Literal["Home", "Table 2675 Analysis", "Settings"]:
+    def render(self) -> Literal["Home", "Table 2675 Analysis", "Settings"]:        
         with st.sidebar:
+            add_vertical_space(4) 
+            
             option = option_menu("Main Menu", [
                     "Home", 
                     "Table 2675 Analysis",

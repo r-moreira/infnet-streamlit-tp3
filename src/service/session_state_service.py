@@ -19,6 +19,9 @@ class SessionStateService:
         if 'primary_color' not in st.session_state:
             st.session_state.primary_color = "#FF4B4B"
 
+    def is_table_2675_dataframes_set(self) -> bool:
+        return self.get_table_2675_continents_df() is not None and self.get_table_2675_countries_df() is not None
+
     def set_table_2675_continents_df(self, df: pd.DataFrame) -> None:
         st.session_state.table_2675_continents_df = df
         
