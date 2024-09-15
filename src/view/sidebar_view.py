@@ -10,15 +10,18 @@ class SidebarView(AbstractStreamlitView):
         self.options = ["Home", "Settings"]
         self.session_state_service = session_state_service
     
-    def render(self) -> Literal["Home", "Settings"]:
+    def render(self) -> Literal["Home", "Table 2675 Analysis", "Settings"]:
         with st.sidebar:
             option = option_menu("Main Menu", [
                     "Home", 
-                    'Settings'
+                    "Table 2675 Analysis",
+                    "Settings",
                 ], 
                 icons=[
                     'house',
-                    'gear'],
+                    'table',
+                    'gear'
+                ],
                 menu_icon="cast",
                 default_index=self.options.index(self.session_state_service.get_menu_option()),
                 styles={ 

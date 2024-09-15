@@ -19,7 +19,7 @@ Base de dados escolhida: [Chegada mensal de turistas pelo Rio de Janeiro, por vi
 
 ```./src/*``` - Contém o código fonte da aplicação.
 
-```./data/*``` - Contém o arquivo CSV com os dados.
+```./data/*``` - Contém os arquivos com os dados.
 
 ```./requirements.txt``` - Contém as dependências do projeto.
 

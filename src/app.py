@@ -6,6 +6,7 @@ from service.session_state_service import SessionStateService
 from view.sidebar_view import SidebarView
 from view.settings_view import SettingsView
 from view.home_view import HomeView
+from view.table_analysis_view import TableAnalysisView
 
 
 class Container(containers.DeclarativeContainer):    
@@ -23,6 +24,12 @@ class Container(containers.DeclarativeContainer):
         session_state_service=session_state_service
     )
     
+    table_analysis_view = providers.Singleton(
+        TableAnalysisView,
+        data_rio_parser_service=data_rio_parser_service,
+        session_state_service=session_state_service
+    )
+    
     settings_view = providers.Singleton(
         SettingsView,
         session_state_service=session_state_service
@@ -30,10 +37,10 @@ class Container(containers.DeclarativeContainer):
     
     streamlit_service = providers.Singleton(
         StreamlitService,
-        data_rio_parser_service=data_rio_parser_service,
         session_state_service=session_state_service,
         sidebar_view=sidebar_view,
         home_view=home_view,
+        table_analysis_view=table_analysis_view,
         settings_view=settings_view
     )
 

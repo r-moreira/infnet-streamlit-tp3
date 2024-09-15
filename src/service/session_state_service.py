@@ -1,8 +1,13 @@
+import pandas as pd
 import streamlit as st
 from typing import Literal
 
 class SessionStateService:
     def __init__(self):
+        if 'table_2675_continents_df' not in st.session_state:
+            st.session_state.table_2675_continents_df = None
+        if 'table_2675_countries_df' not in st.session_state:
+            st.session_state.table_2675_countries_df = None
         if 'menu_option' not in st.session_state:
             st.session_state.menu_option = "Home"
         if 'background_color' not in st.session_state:
@@ -13,6 +18,18 @@ class SessionStateService:
             st.session_state.text_color = "#FAFAFA"
         if 'primary_color' not in st.session_state:
             st.session_state.primary_color = "#FF4B4B"
+
+    def set_table_2675_continents_df(self, df: pd.DataFrame) -> None:
+        st.session_state.table_2675_continents_df = df
+        
+    def get_table_2675_continents_df(self) -> pd.DataFrame:
+        return st.session_state.table_2675_continents_df
+    
+    def set_table_2675_countries_df(self, df: pd.DataFrame) -> None:
+        st.session_state.table_2675_countries_df = df
+        
+    def get_table_2675_countries_df(self) -> pd.DataFrame:
+        return st.session_state.table_2675_countries_df
 
     def set_menu_option(self, option: Literal["Home", "Settings"]) -> None:
         st.session_state.menu_option = option
@@ -31,7 +48,7 @@ class SessionStateService:
         background_color: str,
         secondary_background_color: str, 
         text_color: str,
-        primary_color: str ) -> None:
+        primary_color: str) -> None:
         
         st.session_state.background_color = background_color
         st.session_state.secondary_background_color = secondary_background_color
