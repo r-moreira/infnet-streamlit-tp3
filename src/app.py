@@ -27,7 +27,8 @@ class Container(containers.DeclarativeContainer):
     table_analysis_view = providers.Singleton(
         TableAnalysisView,
         data_rio_parser_service=data_rio_parser_service,
-        session_state_service=session_state_service
+        session_state_service=session_state_service,
+        sidebar_view=sidebar_view
     )
     
     settings_view = providers.Singleton(

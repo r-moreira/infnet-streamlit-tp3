@@ -28,13 +28,13 @@ class StreamlitService:
         
         self._set_page_theme()
         
-        option = self.sidebar_view.render()
+        option_menu = self.sidebar_view.render()
         
-        if option == "Home":                 
+        if option_menu == "Home":                 
             self.home_view.render()
-        elif option == "Table 2675 Analysis":
+        elif option_menu == "Table 2675 Analysis":
             self.table_analysis_view.render()
-        elif option == "Settings":
+        elif option_menu == "Settings":
             self.settings_view.render()
             
     def _set_page_theme(self) -> None:

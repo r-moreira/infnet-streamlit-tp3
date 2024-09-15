@@ -11,11 +11,14 @@ class SidebarView(AbstractStreamlitView):
         self.options = ["Home", "Settings"]
         self.session_state_service = session_state_service
     
-    def render(self) -> Literal["Home", "Table 2675 Analysis", "Settings"]:        
+    def render(self) -> Literal["Home", "Table 2675 Analysis", "Settings"]:
+        return self.render_main_menu()
+   
+    def render_main_menu(self) -> Literal["Home", "Table 2675 Analysis", "Settings"]:
         with st.sidebar:
             add_vertical_space(4) 
             
-            option = option_menu("Main Menu", [
+            page_option = option_menu("Main Menu", [
                     "Home", 
                     "Table 2675 Analysis",
                     "Settings",
@@ -33,8 +36,26 @@ class SidebarView(AbstractStreamlitView):
                 }
             )
             
-            st.divider()
-                
-            st.write("This is the sidebar view.")
+            return page_option
+        
+    def render_sub_menu(self) -> Literal["Countries", "Continents"] | None:
+        if self.session_state_service.is_table_2675_dataframes_set():
             
-            return option
+            with st.sidebar:
+                dataset_option = option_menu("Dataset Selection", [
+                        "Countries", 
+                        "Continents",
+                    ], 
+                    icons=[
+                        'flag',
+                        'globe'
+                    ],
+                    menu_icon="database",
+                    default_index=0,
+                    styles={ 
+                        "container": {"background-color": self.session_state_service.get_background_color()},
+                        "nav-link-selected": {"background-color": self.session_state_service.get_primary_color()},
+                    }
+                )
+            
+            return dataset_option

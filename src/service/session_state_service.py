@@ -34,10 +34,10 @@ class SessionStateService:
     def get_table_2675_countries_df(self) -> pd.DataFrame:
         return st.session_state.table_2675_countries_df
 
-    def set_menu_option(self, option: Literal["Home", "Settings"]) -> None:
+    def set_menu_option(self, option: Literal["Home", "Settings", "Table 2675 Analysis"]) -> None:
         st.session_state.menu_option = option
         
-    def get_menu_option(self) -> Literal["Home", "Settings"]:
+    def get_menu_option(self) -> Literal["Home", "Settings", "Table 2675 Analysis"]:
         return st.session_state.menu_option
 
     def reset_colors(self) -> None:
