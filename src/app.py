@@ -1,7 +1,7 @@
 from dependency_injector import containers, providers
 from dependency_injector.wiring import Provide, inject
 from service.streamlit_service import StreamlitService
-from service.datario_parser_service import DataRioParserService
+from service.data_rio_parser_service import DataRioParserService
 from service.session_state_service import SessionStateService
 from view.sidebar_view import SidebarView
 from view.settings_view import SettingsView
@@ -13,7 +13,10 @@ class Container(containers.DeclarativeContainer):
     
     session_state_service = providers.Singleton(SessionStateService)
     
-    sidebar_view = providers.Singleton(SidebarView)
+    sidebar_view = providers.Singleton(
+        SidebarView,
+        session_state_service=session_state_service
+    )
     
     home_view = providers.Singleton(
         HomeView,

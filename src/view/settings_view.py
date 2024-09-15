@@ -12,18 +12,18 @@ class SettingsView(AbstractStreamlitView):
         st.divider()
         st.header("Theme")
         
-        picker, picker2, picker3 = st.columns(3)
+        picker, picker2, picker3, picker4 = st.columns(4)
         button, button2 = st.columns(2)
         
         with picker:
             background_color = st.color_picker(
-                "Background Color",
+                "1st Background Color",
                 self.session_state_service.get_background_color()
             )
         
         with picker2:
             secondary_background_color = st.color_picker(
-                "Secondary Background Color", 
+                "2nd Background Color", 
                 self.session_state_service.get_secondary_background_color()
             )
             
@@ -31,6 +31,12 @@ class SettingsView(AbstractStreamlitView):
             text_color = st.color_picker(
                 "Text Color",
                 self.session_state_service.get_text_color()
+            )
+            
+        with picker4:
+            primary_color = st.color_picker(
+                "Primary Color",
+                self.session_state_service.get_primary_color()
             )
 
         with button:
@@ -41,8 +47,11 @@ class SettingsView(AbstractStreamlitView):
                 self.session_state_service.save_colors(
                     background_color, 
                     secondary_background_color, 
-                    text_color
+                    text_color,
+                    primary_color
                 )          
+                self.session_state_service.set_menu_option("Settings")
+            
                 st.rerun()
                     
         with button2:
@@ -50,4 +59,5 @@ class SettingsView(AbstractStreamlitView):
             reset_button = st.button(label='Reset Colors', use_container_width=True)
             if reset_button:
                 self.session_state_service.reset_colors()
+                self.session_state_service.set_menu_option("Settings")
                 st.rerun()

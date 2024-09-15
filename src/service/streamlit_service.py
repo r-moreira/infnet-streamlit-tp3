@@ -1,10 +1,9 @@
 import streamlit as st
-from service.datario_parser_service import DataRioParserService
+from service.data_rio_parser_service import DataRioParserService
 from service.session_state_service import SessionStateService
 from view.sidebar_view import SidebarView
 from view.settings_view import SettingsView
 from view.home_view import HomeView
-from typing import Literal
 
 class StreamlitService:
     def __init__(
@@ -41,20 +40,23 @@ class StreamlitService:
             f"""
             <style>
             .stApp {{
-                background-color: {st.session_state.background_color};
-                color: {st.session_state.text_color};
+                background-color: {self.session_state_service.get_background_color()};
+                color: {self.session_state_service.get_text_color()};
             }}
             .stSidebar {{
-                background-color: {st.session_state.secondary_background_color};
+                background-color: {self.session_state_service.get_secondary_background_color()};
             }}
             header {{
-                background-color: {st.session_state.background_color};
-                color: {st.session_state.text_color};
+                background-color: {self.session_state_service.get_background_color()};
+                color: {self.session_state_service.get_text_color()};
+            }}
+            button[data-testid="stBaseButton-secondary"] {{
+                background-color: {self.session_state_service.get_secondary_background_color()};
+                color: {self.session_state_service.get_text_color()};
             }}
             button[data-testid="stBaseButton-secondary"]:hover {{
-                background-color: {st.session_state.secondary_background_color};
-                border-color: {st.session_state.text_color};
-                color: {st.session_state.text_color};
+                border-color: {self.session_state_service.get_primary_color()};
+                color: {self.session_state_service.get_primary_color()};
             }}
             </style>
             """,
