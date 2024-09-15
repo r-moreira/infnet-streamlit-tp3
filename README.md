@@ -24,15 +24,23 @@ Base de dados escolhida: [Chegada mensal de turistas pelo Rio de Janeiro, por vi
 ```./requirements.txt``` - Contém as dependências do projeto.
 
 
-
-### Exercícios:
-A resolução completa dos exercícios com os prints do TP2 pode ser encontrada no arquivo ```rodrigo_avila_DR2_TP2.ipynb```.
-
-Os prints dos exercícios estavam disponíveis na pasta "images", com o nome de cada exercício. (removido devido ao limite de tamanho de upload no moodle)
-
 ### Como rodar o projeto streamlit:
+1. Configurando versão do python:
+```bash
+pyenv local 3.11.8
+```
 
-1. Instale as dependências:
+2. Crie um ambiente virtual:
+```bash
+python -m venv .venv
+```
+
+3. Ative o ambiente virtual:
+```bash
+source .venv/bin/activate
+```
+
+3. Instale as dependências:
 ```bash
 pip install -r requirements.txt
 ```
@@ -44,12 +52,7 @@ streamlit run src/app.py
 
 ### Como rodar o notebook:
 
-1. Instale as dependências:
-```bash
-pip install -r requirements.txt
-```
-
-2. Execute o Jupyter Notebook:
+1. Execute o Jupyter Notebook:
 ```bash
 jupyter notebook
 ```

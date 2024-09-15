@@ -14,3 +14,5 @@ plotly
 dependency-injector
 pyyaml
 xlrd
+streamlit-option-menu
+streamlit-extras
