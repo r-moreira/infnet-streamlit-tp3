@@ -1,17 +1,19 @@
 from dependency_injector import containers, providers
 from dependency_injector.wiring import Provide, inject
-from service.StreamlitService import StreamlitService
-import os
+from service.streamlit_service import StreamlitService
+from view.sidebar_view import SidebarView
 
 
 class Container(containers.DeclarativeContainer):    
-    configuration = providers.Configuration(yaml_files=[
-        "./app_config.yaml"
-    ])
-
+    configuration = providers.Configuration(yaml_files=["./app_config.yaml"])
+    
+    sidebar_view = providers.Singleton(
+        SidebarView
+    )
     
     streamlit_service = providers.Singleton(
         StreamlitService,
+        sidebar_view=sidebar_view,
         configuration=configuration
     )
 
