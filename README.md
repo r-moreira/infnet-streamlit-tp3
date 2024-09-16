@@ -4,8 +4,12 @@
 
 ---
 
+### Aviso ao professor:
+Escolhi fazer um plot de mapa na competência de plot complexos, pois é o que mais fazia sentido para os meus dados.
+
+
 ### Sobre o projeto:
-Aplicação para resolver uma série de exercícios com o framework ```Streamlit``, criando visualizações informativas e interativas usando diversas bibliotecas em Python, para explorar e analisar dados epidemiológicos complexos
+Aplicação para resolver uma série de exercícios com o framework ```Streamlit```, criando visualizações informativas e interativas usando diversas bibliotecas em Python, para explorar e analisar dados epidemiológicos complexos
 
 Será utilizado [dados de turismo no Rio de Janeiro](https://www.data.rio/search?groupIds=729990e9fbc04c6ebf81715ab438cae8) para a resolução dos exercícios.
 

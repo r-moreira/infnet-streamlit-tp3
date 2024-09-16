@@ -136,25 +136,47 @@ class TableAnalysisView(AbstractStreamlitView):
                 self.session_state_service.set_menu_option("Table 2675 Analysis")
                 st.rerun()
                     
-    def display_countries_plots(self, df: pd.DataFrame) -> None:
+    def display_countries_plots(self, df: pd.DataFrame) -> None:        
         add_vertical_space(2)
         
         col1, col2 = st.columns(2)
         
         with col1:
-            fig = px.bar(df, x="Country", y="Total", title="Total Tourists by Country", template="plotly_dark")
+            fig = px.bar(
+                df.sort_values(by="Total", ascending=False),
+                x="Country",
+                y="Total",
+                title="Bar Chart: Total Tourists by Country",
+                template="plotly_dark"
+            )
             fig.update_layout(xaxis_tickangle=-45)
             st.plotly_chart(fig)
         
         with col2:
-            fig = px.pie(df, names="Country", values="Total", title="Total Tourists by Country", template="plotly_dark")
+            fig = px.pie(
+                df,
+                names="Country",
+                values="Total",
+                title="Pie Chart: % Tourists by Country",
+                template="plotly_dark"
+            )
             st.plotly_chart(fig)
         
         fig = go.Figure()
+        
         for country in df["Country"].unique():
             country_data = df[df["Country"] == country]
-            fig.add_trace(go.Scatter(x=country_data["Year"], y=country_data["Total"], mode='lines', name=country))
-        fig.update_layout(title="Monthly Tourists by Country", template="plotly_dark")
+            
+            fig.add_trace(
+                go.Scatter(
+                    x=country_data["Year"],
+                    y=country_data["Total"],
+                    mode='lines',
+                    name=country
+                )
+            )
+       
+        fig.update_layout(title="Line Chart: Annual Tourist Trends by Continent", template="plotly_dark")
         st.plotly_chart(fig)
     
     def display_continents_plots(self, df: pd.DataFrame) -> None:
@@ -163,19 +185,39 @@ class TableAnalysisView(AbstractStreamlitView):
         col1, col2 = st.columns(2)
         
         with col1:
-            fig = px.bar(df, x="Continent", y="Total", title="Total Tourists by Continent", template="plotly_dark")
+            fig = px.bar(
+                df.sort_values(by="Total", ascending=False),
+                x="Continent", y="Total",
+                title="Bar Chart: Total Tourists by Continent",
+                template="plotly_dark"
+            )
             fig.update_layout(xaxis_tickangle=-45)
             st.plotly_chart(fig)
         
         with col2:
-            fig = px.pie(df, names="Continent", values="Total", title="Total Tourists by Continent", template="plotly_dark")
+            fig = px.pie(
+                df, 
+                names="Continent",
+                values="Total", 
+                title="Pie Chart: % Tourists by Continent",
+                template="plotly_dark"
+            )
             st.plotly_chart(fig)
         
         fig = go.Figure()
+        
         for continent in df["Continent"].unique():
             continent_data = df[df["Continent"] == continent]
-            fig.add_trace(go.Scatter(x=continent_data["Year"], y=continent_data["Total"], mode='lines', name=continent))
-        fig.update_layout(title="Monthly Tourists by Continent", template="plotly_dark")
+            
+            fig.add_trace(
+                go.Scatter(
+                    x=continent_data["Year"],
+                    y=continent_data["Total"],
+                    mode='lines', name=continent
+                )
+            )
+            
+        fig.update_layout(title="Line Chart: Annual Tourist Trends by Continent", template="plotly_dark")
         st.plotly_chart(fig)
     
 
@@ -186,15 +228,17 @@ class TableAnalysisView(AbstractStreamlitView):
                 geojson_data = json.load(f)
             key_on = "feature.properties.continent"
             columns = ["Continent", "Total"]
-            legend_name = "Number of Tourists by Continent"
+            legend_name = "Map: Number of Tourists by Continent"
             st.markdown("### Number of Tourists by Continent")
+            add_vertical_space(2)
         else:
             geojson_url = "https://raw.githubusercontent.com/python-visualization/folium/main/examples/data/world-countries.json"
             geojson_data = requests.get(geojson_url).json()
             key_on = "feature.properties.name"
             columns = ["Country", "Total"]
-            legend_name = "Number of Tourists by Country"
-            st.markdown("### Number of Tourists by Country")
+            legend_name = "Map: Number of Tourists by Country"
+            st.markdown("#### Map: Number of Tourists by Country")
+            add_vertical_space(2)
         
         m = folium.Map(location=[0, 0], zoom_start=2, tiles=None)
         

@@ -19,6 +19,7 @@ class DataRioParserService:
             'Dezembro',
             'Year'  
         ]
+        
         self.table_2675_continents = [
             'África',
             'América Central',
@@ -30,6 +31,24 @@ class DataRioParserService:
             'Oceania'
         ]
         
+        self.column_translation = {
+            'Continentes e países de residência permanente': 'Continents and countries of permanent residence',
+            'Total': 'Total',
+            'Janeiro': 'January',
+            'Fevereiro': 'February',
+            'Março': 'March',
+            'Abril': 'April',
+            'Maio': 'May',
+            'Junho': 'June',
+            'Julho': 'July',
+            'Agosto': 'August',
+            'Setembro': 'September',
+            'Outubro': 'October',
+            'Novembro': 'November',
+            'Dezembro': 'December',
+            'Year': 'Year'
+        }
+            
         self.country_translation = {
             "África do Sul": "South Africa",
             "Angola": "Angola",
@@ -197,6 +216,9 @@ class DataRioParserService:
         
         countries_df.rename(columns={'País': 'Country', 'Continente': 'Continent'}, inplace=True)
         continents_df.rename(columns={'Continente': 'Continent'}, inplace=True)
+        
+        continents_df.rename(columns=self.column_translation, inplace=True)
+        countries_df.rename(columns=self.column_translation, inplace=True)
 
         return  _clean_dataframe(continents_df), _clean_dataframe(countries_df)
 
