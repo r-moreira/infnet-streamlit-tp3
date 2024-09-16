@@ -2,6 +2,7 @@ import streamlit as st
 import time
 import pandas as pd
 import base64
+import pydeck as pdk
 import plotly.graph_objects as go
 import plotly.express as px
 from datetime import timedelta
@@ -135,6 +136,27 @@ class TableAnalysisView(AbstractStreamlitView):
         fig.update_layout(title="Monthly Tourists by Continent", template="plotly_dark")
         st.plotly_chart(fig)
         
+        st.pydeck_chart(pdk.Deck(
+            map_style='mapbox://styles/mapbox/dark-v10',
+            initial_view_state=pdk.ViewState(
+                latitude=0,
+                longitude=0,
+                zoom=1,
+                pitch=50,
+            ),
+            layers=[
+                pdk.Layer(
+                    'ScatterplotLayer',
+                    data=df,
+                    get_position='[longitude, latitude]',
+                    get_fill_color='[200, 30, 0, 160]',
+                    get_radius='Total',
+                    pickable=True,
+                    auto_highlight=True,
+                ),
+            ],
+        ))
+            
     def display_countries_plots(self, df: pd.DataFrame) -> None:
         add_vertical_space(2)
         
@@ -156,6 +178,73 @@ class TableAnalysisView(AbstractStreamlitView):
         fig.update_layout(title="Monthly Tourists by Country", template="plotly_dark")
         st.plotly_chart(fig)
         
+        df = self.prepare_dataframe_for_pydeck(df, "País")
+        
+        st.pydeck_chart(pdk.Deck(
+            map_style='mapbox://styles/mapbox/dark-v10',
+            initial_view_state=pdk.ViewState(
+                latitude=0,
+                longitude=0,
+                zoom=1,
+                pitch=50,
+            ),
+            layers=[
+                pdk.Layer(
+                    'ScatterplotLayer',
+                    data=df,
+                    get_position='[longitude, latitude]',
+                    get_fill_color='[color, 140, 0, 160]',
+                    get_radius='Total',
+                    pickable=True,
+                    auto_highlight=True,
+                ),
+            ],
+        ))
+    
+    def display_continents_plots(self, df: pd.DataFrame) -> None:
+        add_vertical_space(2)
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            fig = px.bar(df, x="Continente", y="Total", title="Total Tourists by Continent", template="plotly_dark")
+            fig.update_layout(xaxis_tickangle=-45)
+            st.plotly_chart(fig)
+        
+        with col2:
+            fig = px.pie(df, names="Continente", values="Total", title="Total Tourists by Continent", template="plotly_dark")
+            st.plotly_chart(fig)
+        
+        fig = go.Figure()
+        for continent in df["Continente"].unique():
+            continent_data = df[df["Continente"] == continent]
+            fig.add_trace(go.Scatter(x=continent_data["year"], y=continent_data["Total"], mode='lines', name=continent))
+        fig.update_layout(title="Monthly Tourists by Continent", template="plotly_dark")
+        st.plotly_chart(fig)
+        
+        df = self.prepare_dataframe_for_pydeck(df, "Continente")
+        
+        st.pydeck_chart(pdk.Deck(
+            map_style='mapbox://styles/mapbox/dark-v10',
+            initial_view_state=pdk.ViewState(
+                latitude=0,
+                longitude=0,
+                zoom=1,
+                pitch=50,
+            ),
+            layers=[
+                pdk.Layer(
+                    'ScatterplotLayer',
+                    data=df,
+                    get_position='[longitude, latitude]',
+                    get_fill_color='[color, 140, 0, 160]',
+                    get_radius='Total',
+                    pickable=True,
+                    auto_highlight=True,
+                ),
+            ],
+        ))
+            
         
     def render_multiselect_filter(self, df: pd.DataFrame, col_map: dict) -> pd.DataFrame:
         add_vertical_space(1)
@@ -177,5 +266,24 @@ class TableAnalysisView(AbstractStreamlitView):
         selected_year_range = st.slider("Select Year Range", min_year, max_year, (min_year, max_year))
         
         df = df[(df["year"] >= selected_year_range[0]) & (df["year"] <= selected_year_range[1])]
+        
+        return df
+    
+    def prepare_dataframe_for_pydeck(self, df: pd.DataFrame, location_column: str) -> pd.DataFrame:
+        location_coords = {
+            "País": {
+                "Brazil": [-14.2350, -51.9253],
+                "Germany": [51.1657, 10.4515],
+            },
+            "Continente": {
+                "Africa": [1.6508, 10.2679],
+                "Asia": [34.0479, 100.6197],
+            }
+        }
+        
+        df["latitude"] = df[location_column].apply(lambda x: location_coords[location_column].get(x, [0, 0])[0])
+        df["longitude"] = df[location_column].apply(lambda x: location_coords[location_column].get(x, [0, 0])[1])
+        
+        df['color'] = df['Total'] / df['Total'].max() * 255
         
         return df
