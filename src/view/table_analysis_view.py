@@ -16,6 +16,7 @@ from folium.plugins import HeatMap
 import json
 import requests
 from streamlit_folium import folium_static
+from typing import Literal
 
 
 class TableAnalysisView(AbstractStreamlitView):
@@ -54,7 +55,7 @@ class TableAnalysisView(AbstractStreamlitView):
                 
                 self.display_table_2675_data(filtered_countries_df, "table2675_countries_data.csv")
                 self.display_countries_plots(filtered_countries_df)
-                self.display_folium_countries_map(filtered_countries_df)
+                self.display_folium_map(filtered_countries_df, "Country")
            
             elif dataset_option == "Continents":
                 pass
@@ -66,6 +67,7 @@ class TableAnalysisView(AbstractStreamlitView):
                 
                 self.display_table_2675_data(filtered_continents_df, "table_2675_continents_data.csv")
                 self.display_continents_plots(filtered_continents_df)
+                self.display_folium_map(filtered_continents_df, "Continent")
     
     def uploading_form(self) -> None:
         add_vertical_space(2)
@@ -158,9 +160,21 @@ class TableAnalysisView(AbstractStreamlitView):
         fig.update_layout(title="Monthly Tourists by Continent", template="plotly_dark")
         st.plotly_chart(fig)
     
-    def display_folium_countries_map(self, df: pd.DataFrame) -> None:
-        geojson_url = "https://raw.githubusercontent.com/python-visualization/folium/main/examples/data/world-countries.json"
-        geojson_data = requests.get(geojson_url).json()
+
+    def display_folium_map(self, df: pd.DataFrame, display_type: Literal["Country", "Continent"]) -> None:
+        if display_type == "Continent":
+            geojson_path = "data/02_processed/custom.geo.json"
+            with open(geojson_path) as f:
+                geojson_data = json.load(f)
+            key_on = "feature.properties.continent"
+            columns = ["Continent", "Total"]
+            legend_name = "Number of Tourists by Continent"
+        else:
+            geojson_url = "https://raw.githubusercontent.com/python-visualization/folium/main/examples/data/world-countries.json"
+            geojson_data = requests.get(geojson_url).json()
+            key_on = "feature.properties.name"
+            columns = ["Country", "Total"]
+            legend_name = "Number of Tourists by Country"
         
         m = folium.Map(location=[0, 0], zoom_start=2, tiles=None)
         
@@ -169,28 +183,28 @@ class TableAnalysisView(AbstractStreamlitView):
             attr='&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
             name='Stadia Alidade Smooth Dark'
         ).add_to(m)
-                
+        
         Choropleth(
             geo_data=geojson_data,
             name="choropleth",
             data=df,
-            columns=["Country", "Total"],
-            key_on="feature.properties.name",
+            columns=columns,
+            key_on=key_on,
             fill_color="YlOrRd",
             fill_opacity=0.7,
             line_opacity=0.2,
-            legend_name="Number of Tourists",
+            legend_name=legend_name,
         ).add_to(m)
         
         folium.LayerControl().add_to(m)
         
         folium_static(m)
-    
+        
     def render_multiselect_filter(self, df: pd.DataFrame, column_name: dict) -> pd.DataFrame:
         add_vertical_space(1)
         
         options = sorted(df[column_name].unique())
-        selected_options = st.multiselect(column_name, options, default=options[:5])
+        selected_options = st.multiselect(column_name, options, default=options[:7])
         
         if selected_options:
             df = df[df[column_name].isin(selected_options)]
