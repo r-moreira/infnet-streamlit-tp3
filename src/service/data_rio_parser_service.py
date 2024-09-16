@@ -40,7 +40,7 @@ class DataRioParserService:
             "Panamá": "Panama",
             "Porto Rico": "Puerto Rico",
             "Canadá": "Canada",
-            "Estados Unidos": "United States",
+            "Estados Unidos": "United States of America",
             "México": "Mexico",
             "Argentina": "Argentina",
             "Bolívia": "Bolivia",

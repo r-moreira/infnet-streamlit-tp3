@@ -49,7 +49,16 @@ class TableAnalysisView(AbstractStreamlitView):
                 pass
                 filtered_countries_df = self.render_multiselect_filter(
                     self.session_state_service.get_table_2675_countries_df(),
-                    "Country"
+                    column_name="Country",
+                    default_values=[
+                        "Argentina",
+                        "United States of America",
+                        "France", 
+                        "South Africa",
+                        "Russia",
+                        "Japan",
+                        "Australia"
+                    ]
                 )
                 filtered_countries_df = self.render_year_slider_filter(filtered_countries_df)
                 
@@ -61,7 +70,16 @@ class TableAnalysisView(AbstractStreamlitView):
                 pass
                 filtered_continents_df = self.render_multiselect_filter(
                     self.session_state_service.get_table_2675_continents_df(),
-                    "Continent"
+                    column_name="Continent",
+                    default_values=[
+                        "South America",
+                        "Asia",
+                        "Europe", 
+                        "Oceania", 
+                        "Central America and Caribbean",
+                        "North America", 
+                        "Africa"
+                    ]
                 )
                 filtered_continents_df = self.render_year_slider_filter(filtered_continents_df)
                 
@@ -169,12 +187,14 @@ class TableAnalysisView(AbstractStreamlitView):
             key_on = "feature.properties.continent"
             columns = ["Continent", "Total"]
             legend_name = "Number of Tourists by Continent"
+            st.markdown("### Number of Tourists by Continent")
         else:
             geojson_url = "https://raw.githubusercontent.com/python-visualization/folium/main/examples/data/world-countries.json"
             geojson_data = requests.get(geojson_url).json()
             key_on = "feature.properties.name"
             columns = ["Country", "Total"]
             legend_name = "Number of Tourists by Country"
+            st.markdown("### Number of Tourists by Country")
         
         m = folium.Map(location=[0, 0], zoom_start=2, tiles=None)
         
@@ -198,13 +218,22 @@ class TableAnalysisView(AbstractStreamlitView):
         
         folium.LayerControl().add_to(m)
         
-        folium_static(m)
+        col1, col2 = st.columns(2)
         
-    def render_multiselect_filter(self, df: pd.DataFrame, column_name: dict) -> pd.DataFrame:
+        with col1:
+            width = st.slider("Map Width", min_value=400, max_value=1600, value=800, step=100)
+            
+        with col2:
+            height = st.slider("Map Height", min_value=400, max_value=1200, value=800, step=100)
+        
+        folium_static(m, width=width, height=height)
+
+        
+    def render_multiselect_filter(self, df: pd.DataFrame, column_name: dict, default_values: list[str]) -> pd.DataFrame:
         add_vertical_space(1)
         
         options = sorted(df[column_name].unique())
-        selected_options = st.multiselect(column_name, options, default=options[:7])
+        selected_options = st.multiselect(column_name, options, default=default_values)
         
         if selected_options:
             df = df[df[column_name].isin(selected_options)]
