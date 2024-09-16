@@ -46,12 +46,12 @@ python -m venv .venv
 source .venv/bin/activate
 ```
 
-3. Instale as dependências:
+4. Instale as dependências:
 ```bash
 pip install -r requirements.txt
 ```
 
-2. Execute a aplicação:
+5. Execute a aplicação:
 ```bash
 streamlit run src/app.py
 ```
