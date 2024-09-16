@@ -1,4 +1,5 @@
 import streamlit as st
+import pandas as pd
 from streamlit_extras.add_vertical_space import add_vertical_space
 from streamlit_option_menu import option_menu
 from view.abstract_streamlit_view import AbstractStreamlitView
@@ -8,7 +9,7 @@ from typing import Literal
 class SidebarView(AbstractStreamlitView):
     
     def __init__(self, session_state_service: SessionStateService) -> None:
-        self.options = ["Home", "Settings"]
+        self.options = ["Home", "Table 2675 Analysis", "Settings"]
         self.session_state_service = session_state_service
     
     def render(self) -> Literal["Home", "Table 2675 Analysis", "Settings"]:

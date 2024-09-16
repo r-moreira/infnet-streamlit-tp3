@@ -28,6 +28,10 @@ class SessionStateService:
     def get_table_2675_continents_df(self) -> pd.DataFrame:
         return st.session_state.table_2675_continents_df
     
+    def clear_table_2675_dataframes(self) -> None:
+        st.session_state.table_2675_continents_df = None
+        st.session_state.table_2675_countries_df = None
+    
     def set_table_2675_countries_df(self, df: pd.DataFrame) -> None:
         st.session_state.table_2675_countries_df = df
         

@@ -23,7 +23,8 @@ class StreamlitService:
     def run(self) -> None:
         st.set_page_config(
             page_title="DataRio Turism",
-            page_icon="🌐"
+            page_icon="🌐",
+            layout="wide",
         )
         
         self._set_page_theme()
