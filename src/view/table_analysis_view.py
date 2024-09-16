@@ -2,6 +2,8 @@ import streamlit as st
 import time
 import pandas as pd
 import base64
+import plotly.graph_objects as go
+import plotly.express as px
 from datetime import timedelta
 from io import BytesIO
 from view.abstract_streamlit_view import AbstractStreamlitView
@@ -9,6 +11,8 @@ from service.session_state_service import SessionStateService
 from service.data_rio_parser_service import DataRioParserService
 from streamlit_extras.add_vertical_space import add_vertical_space
 from view.sidebar_view import SidebarView
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 class TableAnalysisView(AbstractStreamlitView):
     def __init__(
@@ -38,7 +42,7 @@ class TableAnalysisView(AbstractStreamlitView):
             dataset_option = self.sidebar_view.render_sub_menu()
             
             if dataset_option == "Countries":
-                filtered_countries_df = self.render_selectbox_filter(
+                filtered_countries_df = self.render_multiselect_filter(
                     self.session_state_service.get_table_2675_countries_df(),
                     {
                         "Country": "País"
@@ -47,9 +51,10 @@ class TableAnalysisView(AbstractStreamlitView):
                 filtered_countries_df = self.render_year_slider_filter(filtered_countries_df)
                 
                 self.display_table_2675_data(filtered_countries_df, "table2675_countries_data.csv")
+                self.display_countries_plots(filtered_countries_df)
            
             elif dataset_option == "Continents":
-                filtered_continents_df = self.render_selectbox_filter(
+                filtered_continents_df = self.render_multiselect_filter(
                     self.session_state_service.get_table_2675_continents_df(),
                     {
                         "Continent": "Continente"
@@ -58,6 +63,7 @@ class TableAnalysisView(AbstractStreamlitView):
                 filtered_continents_df = self.render_year_slider_filter(filtered_continents_df)
                 
                 self.display_table_2675_data(filtered_continents_df, "table_2675_continents_data.csv")
+                self.display_continents_plots(filtered_continents_df)
     
     def uploading_form(self) -> None:
         add_vertical_space(2)
@@ -108,20 +114,60 @@ class TableAnalysisView(AbstractStreamlitView):
                 self.session_state_service.set_menu_option("Table 2675 Analysis")
                 st.rerun()
                     
-            
-            
-
-    def render_selectbox_filter(self, df: pd.DataFrame, col_map: dict) -> pd.DataFrame:
+    def display_continents_plots(self, df: pd.DataFrame) -> None:
+        add_vertical_space(2)
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            fig = px.bar(df, x="Continente", y="Total", title="Total Tourists by Continent", template="plotly_dark")
+            fig.update_layout(xaxis_tickangle=-45)
+            st.plotly_chart(fig)
+        
+        with col2:
+            fig = px.pie(df, names="Continente", values="Total", title="Total Tourists by Continent", template="plotly_dark")
+            st.plotly_chart(fig)
+        
+        fig = go.Figure()
+        for continent in df["Continente"].unique():
+            continent_data = df[df["Continente"] == continent]
+            fig.add_trace(go.Scatter(x=continent_data["year"], y=continent_data["Total"], mode='lines', name=continent))
+        fig.update_layout(title="Monthly Tourists by Continent", template="plotly_dark")
+        st.plotly_chart(fig)
+        
+    def display_countries_plots(self, df: pd.DataFrame) -> None:
+        add_vertical_space(2)
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            fig = px.bar(df, x="País", y="Total", title="Total Tourists by Country", template="plotly_dark")
+            fig.update_layout(xaxis_tickangle=-45)
+            st.plotly_chart(fig)
+        
+        with col2:
+            fig = px.pie(df, names="País", values="Total", title="Total Tourists by Country", template="plotly_dark")
+            st.plotly_chart(fig)
+        
+        fig = go.Figure()
+        for country in df["País"].unique():
+            country_data = df[df["País"] == country]
+            fig.add_trace(go.Scatter(x=country_data["year"], y=country_data["Total"], mode='lines', name=country))
+        fig.update_layout(title="Monthly Tourists by Country", template="plotly_dark")
+        st.plotly_chart(fig)
+        
+        
+    def render_multiselect_filter(self, df: pd.DataFrame, col_map: dict) -> pd.DataFrame:
         add_vertical_space(1)
         
         for display_name, column_name in col_map.items():
-            options = ["All"] + sorted(df[column_name].unique())
-            selected_option = st.selectbox(display_name, options)
+            options = sorted(df[column_name].unique())
+            selected_options = st.multiselect(display_name, options, default=options[:1])
             
-            if selected_option != "All":
-                df = df[df[column_name] == selected_option]
-        
-        return df
+            if selected_options:
+                df = df[df[column_name].isin(selected_options)]
+    
+        return df   
 
     def render_year_slider_filter(self, df: pd.DataFrame) -> pd.DataFrame:
         add_vertical_space(1)
