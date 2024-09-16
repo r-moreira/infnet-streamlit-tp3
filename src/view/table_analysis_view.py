@@ -1,7 +1,6 @@
 import streamlit as st
 import time
 import pandas as pd
-import base64
 import pydeck as pdk
 import plotly.graph_objects as go
 import plotly.express as px
@@ -12,8 +11,7 @@ from service.session_state_service import SessionStateService
 from service.data_rio_parser_service import DataRioParserService
 from streamlit_extras.add_vertical_space import add_vertical_space
 from view.sidebar_view import SidebarView
-import matplotlib.pyplot as plt
-import seaborn as sns
+from geopy.geocoders import Photon
 
 class TableAnalysisView(AbstractStreamlitView):
     def __init__(
@@ -251,7 +249,7 @@ class TableAnalysisView(AbstractStreamlitView):
         
         for display_name, column_name in col_map.items():
             options = sorted(df[column_name].unique())
-            selected_options = st.multiselect(display_name, options, default=options[:1])
+            selected_options = st.multiselect(display_name, options, default=options[:1]) #TODO: Select some options by default
             
             if selected_options:
                 df = df[df[column_name].isin(selected_options)]
@@ -270,20 +268,28 @@ class TableAnalysisView(AbstractStreamlitView):
         return df
     
     def prepare_dataframe_for_pydeck(self, df: pd.DataFrame, location_column: str) -> pd.DataFrame:
-        location_coords = {
-            "País": {
-                "Brazil": [-14.2350, -51.9253],
-                "Germany": [51.1657, 10.4515],
-            },
-            "Continente": {
-                "Africa": [1.6508, 10.2679],
-                "Asia": [34.0479, 100.6197],
-            }
-        }
+        geolocator = Photon(user_agent="geoapiExercises")
         
-        df["latitude"] = df[location_column].apply(lambda x: location_coords[location_column].get(x, [0, 0])[0])
-        df["longitude"] = df[location_column].apply(lambda x: location_coords[location_column].get(x, [0, 0])[1])
+        def get_lat_long(location):
+            try:
+                print(f"Getting lat/long for {location}")
+                location_data = geolocator.geocode(f"País, {location}")
+                return location_data.latitude, location_data.longitude
+            except Exception as e:
+                print(f"Error getting lat/long for {location} - {e}")
+                return 0, 0
         
+        # Get unique locations
+        unique_locations = df[location_column].unique()
+        
+        # Fetch lat/long for unique locations
+        location_coords = {location: get_lat_long(location) for location in unique_locations}
+        
+        # Map lat/long back to the original dataframe
+        df["latitude"] = df[location_column].map(lambda x: location_coords[x][0])
+        df["longitude"] = df[location_column].map(lambda x: location_coords[x][1])
+        
+        # Normalize the tourist data for coloring
         df['color'] = df['Total'] / df['Total'].max() * 255
         
         return df
