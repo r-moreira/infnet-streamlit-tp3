@@ -46,7 +46,6 @@ class TableAnalysisView(AbstractStreamlitView):
                 
             dataset_option = self.sidebar_view.render_sub_menu()
             if dataset_option == "Countries":
-                pass
                 filtered_countries_df = self.render_multiselect_filter(
                     self.session_state_service.get_table_2675_countries_df(),
                     column_name="Country",
@@ -67,7 +66,6 @@ class TableAnalysisView(AbstractStreamlitView):
                 self.display_folium_map(filtered_countries_df, "Country")
            
             elif dataset_option == "Continents":
-                pass
                 filtered_continents_df = self.render_multiselect_filter(
                     self.session_state_service.get_table_2675_continents_df(),
                     column_name="Continent",

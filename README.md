@@ -5,7 +5,7 @@
 ---
 
 ### Aviso ao professor:
-Os dados do DataRIO estava em formato .xls, portanto o upload será feito através do arquivo .xls disponibilizado pelo portal e se encontra no diretório ```./data/01_raw```.
+Os dados do DataRIO estava em formato .xls, portanto o upload será feito através do arquivo .xls disponibilizado pelo portal e se encontra no diretório ```./data/01_raw```. 
 
 Escolhi fazer um plot de mapa na competência de plot complexos, pois é o que mais fazia sentido para os meus dados.
 
