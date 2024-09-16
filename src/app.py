@@ -1,6 +1,6 @@
 from dependency_injector import containers, providers
 from dependency_injector.wiring import Provide, inject
-from service.streamlit_service import StreamlitService
+from view.main_view import MainView
 from service.data_rio_parser_service import DataRioParserService
 from service.session_state_service import SessionStateService
 from view.sidebar_view import SidebarView
@@ -36,8 +36,8 @@ class Container(containers.DeclarativeContainer):
         session_state_service=session_state_service
     )
     
-    streamlit_service = providers.Singleton(
-        StreamlitService,
+    main_view = providers.Singleton(
+        MainView,
         session_state_service=session_state_service,
         sidebar_view=sidebar_view,
         home_view=home_view,
@@ -47,8 +47,8 @@ class Container(containers.DeclarativeContainer):
 
 
 @inject
-def main(streamlit_service: StreamlitService = Provide[Container.streamlit_service]) -> None:
-    streamlit_service.run()
+def main(main_view: MainView = Provide[Container.main_view]) -> None:
+    main_view.render()
 
 
 if __name__ == "__main__":

@@ -4,8 +4,9 @@ from view.sidebar_view import SidebarView
 from view.settings_view import SettingsView
 from view.home_view import HomeView
 from view.table_analysis_view import TableAnalysisView
+from view.abstract_streamlit_view import AbstractStreamlitView
 
-class StreamlitService:
+class MainView(AbstractStreamlitView):
     def __init__(
         self,
         session_state_service: SessionStateService,
@@ -20,7 +21,7 @@ class StreamlitService:
         self.home_view = home_view
         self.table_analysis_view = table_analysis_view
         
-    def run(self) -> None:
+    def render(self) -> None:
         st.set_page_config(
             page_title="DataRio Turism",
             page_icon="🌐",
